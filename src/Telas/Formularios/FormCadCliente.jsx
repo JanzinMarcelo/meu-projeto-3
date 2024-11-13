@@ -19,7 +19,7 @@ export default function FormularioCadCliente(props) {
             setValidado(false);
         if (!props.modoEditor) {
             //add cliente
-            props.setMostrarTabela.push(cliente);
+            props.listaClientes.push(cliente);
             props.setMostrarTabela(true);
           }
           else {

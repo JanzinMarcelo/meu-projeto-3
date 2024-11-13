@@ -1,13 +1,43 @@
-import { Button, Col, Form, Row } from "react-bootstrap";
+import { Button, Col, Form, Row} from "react-bootstrap";
 import { useState } from "react";
 
 export default function FormularioCadProduto(props) {
+
+    const [produto, setProduto] = useState(props.produtoSelect);
+
     const [validado, setValidado] = useState(false);
 
-    function cadastrar(evento) {
-        const formulario = evento.currentTarget; // aquele que disparou o evento
-        if (formulario.checkValidity()) {
+    function updateProduto(evento){
+        const nome = evento.target.name;
+        const valor = evento.target.value;
+        setProduto({...produto, [nome]: valor});
+    }
+
+    function cadastrar(evento){
+        const formulario = evento.currentTarget; 
+        if (formulario.checkValidity()){
             setValidado(false);
+            if (!props.modoEditor) {
+                //add produto
+                props.listaProdutos.push(produto);
+                props.setMostrarTabela(true);
+            } else {
+                //edita produto
+                const indice = props.listaProdutos.findIndex((prod) => { 
+                    return prod.codigoProduto === produto.codigoProduto;
+                });
+                props.listaProdutos[indice] = produto;
+                props.setModoEditor(false);
+                props.setProdutoSelect({
+                    codigoProduto: '',
+                    nomeProduto: '',
+                    quantidadeEstoque: '',
+                    precoCusto: '',
+                    precoVenda: '',
+                    categoria: '',
+                });
+                props.setMostrarTabela(true);
+            }
         } else {
             setValidado(true);
         }
@@ -18,78 +48,95 @@ export default function FormularioCadProduto(props) {
     return (
         <Form validated={validado} className="border p-2" noValidate onSubmit={cadastrar}>
             <Row className="mb-3">
-                <Form.Group as={Col} md="4" controlId="codigoProduto">
+                <Form.Group as={Col} md="4" >
                     <Form.Label>Código do Produto:</Form.Label>
                     <Form.Control
                         required
                         type="text"
-                        placeholder="Ex: PROD001"
+                        placeholder="Código do Produto"
+                        id="codigoProduto"
+                        name="codigoProduto"
+                        value={produto.codigoProduto}
+                        onChange={updateProduto}
                     />
-                    <Form.Control.Feedback type="invalid">
-                        Por favor, informe o Código do Produto!
-                    </Form.Control.Feedback>
+                    <Form.Control.Feedback type="invalid">Por favor, informe o código do produto!</Form.Control.Feedback>
                 </Form.Group>
             </Row>
             <Row className="mb-3">
-                <Form.Group as={Col} controlId="nomeProduto">
+                <Form.Group as={Col} >
                     <Form.Label>Nome do Produto:</Form.Label>
                     <Form.Control
                         required
                         type="text"
-                        placeholder="Ex: Caneta Azul"
+                        placeholder="Nome do Produto"
+                        id="nomeProduto"
+                        name="nomeProduto"
+                        value={produto.nomeProduto}
+                        onChange={updateProduto}
                     />
-                    <Form.Control.Feedback type="invalid">
-                        Por favor, informe o Nome do Produto!
-                    </Form.Control.Feedback>
+                    <Form.Control.Feedback type="invalid">Por favor, informe o nome do produto!</Form.Control.Feedback>
                 </Form.Group>
             </Row>
             <Row className="mb-3">
-                <Form.Group as={Col} controlId="qtEstoque">
-                    <Form.Label>Quantidade Disponível:</Form.Label>
+                <Form.Group as={Col} >
+                    <Form.Label>Quantidade em Estoque:</Form.Label>
                     <Form.Control
                         required
                         type="number"
-                        placeholder="Ex: 100"
-                        min="0"
-                        step="1"
+                        placeholder="Quantidade em Estoque"
+                        id="quantidadeEstoque"
+                        name="quantidadeEstoque"
+                        value={produto.quantidadeEstoque}
+                        onChange={updateProduto}
+                    />
+                    <Form.Control.Feedback type="invalid">Por favor, informe a quantidade em estoque!</Form.Control.Feedback>
+                </Form.Group>
+            </Row>
+            <Row className="mb-3">
+                <Form.Group as={Col} md="6" >
+                    <Form.Label>Preço de Custo:</Form.Label>
+                    <Form.Control 
+                    type="number" 
+                    placeholder="Preço de Custo"
+                    id="precoCusto"
+                    name="precoCusto"
+                    value={produto.precoCusto}
+                    onChange={updateProduto}
                     />
                     <Form.Control.Feedback type="invalid">
-                        Por favor, informe a Quantidade Disponível!
+                        Por favor, informe o preço de custo.
                     </Form.Control.Feedback>
                 </Form.Group>
-            </Row>
-            <Row className="mb-3">
-                <Form.Group as={Col} md="6" controlId="precoC">
-                    <Form.Label>Preço de Compra:</Form.Label>
-                    <Form.Control type="text" placeholder="Ex: 12.50" required />
-                    <Form.Control.Feedback type="invalid">
-                        Por favor, informe o Preço de Compra!
-                    </Form.Control.Feedback>
-                </Form.Group>
-                <Form.Group as={Col} md="6" controlId="precoV">
+                <Form.Group as={Col} md="6" >
                     <Form.Label>Preço de Venda:</Form.Label>
-                    <Form.Control type="text" placeholder="Ex: 20.00" required />
+                    <Form.Control 
+                    type="number" 
+                    placeholder="Preço de Venda"
+                    id="precoVenda"
+                    name="precoVenda"
+                    value={produto.precoVenda}  
+                    onChange={updateProduto}
+                    />
                     <Form.Control.Feedback type="invalid">
-                        Por favor, informe o Preço de Venda!
+                        Por favor, informe o preço de venda.
                     </Form.Control.Feedback>
                 </Form.Group>
             </Row>
             <Row className="mb-3">
-                <Form.Group as={Col} controlId="categoriaProduto">
+                <Form.Group as={Col} >
                     <Form.Label>Categoria:</Form.Label>
-                    <Form.Control as="select" required>
-                        <option value="">Selecione uma categoria</option>
-                        <option value="papelaria">Papelaria</option>
-                        <option value="eletronico">Eletrônicos</option>
-                        <option value="alimento">Alimentos</option>
-                        <option value="vestuario">Vestuário</option>
-                    </Form.Control>
+                    <Form.Control type="text" placeholder="Categoria" 
+                    id="categoria" 
+                    name="categoria"
+                    value={produto.categoria}
+                    onChange={updateProduto}/>
                     <Form.Control.Feedback type="invalid">
-                        Por favor, selecione uma Categoria!
+                        Por favor, informe a categoria!
                     </Form.Control.Feedback>
                 </Form.Group>
             </Row>
-            <Button style={{ backgroundColor: "#4CAF50", borderColor: "#4CAF50", color: "#FFF", fontWeight: "bold" }}  type="submit">Cadastrar</Button>
+            <Button style={{ backgroundColor: "#4CAF50", borderColor: "#4CAF50", color: "#FFF", fontWeight: "bold" }} type="submit">{props.modoEditor ? "Editar" : "Cadastrar"}</Button>
+            <Button className="ms-2" variant="secondary" type="button" onClick={() => { props.setMostrarTabela(true); }}>Voltar</Button> 
         </Form>
     );
 }
