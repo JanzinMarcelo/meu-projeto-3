@@ -3,14 +3,7 @@ import { useState } from "react";
 
 export default function FormularioCadCliente(props) {
 
-    const [cliente, setCliente] = useState({
-        cpf: '',
-        nomeCompleto: '',
-        endereco: '',
-        cidade: '',
-        estado: '',
-        cep: '',
-    });
+    const [cliente, setCliente] = useState(props.clienteSelect);
 
     const [validado, setValidado] = useState(false);
 
@@ -24,9 +17,27 @@ export default function FormularioCadCliente(props) {
         const formulario = evento.currentTarget; 
         if (formulario.checkValidity()){
             setValidado(false);
+        if (!props.modoEditor) {
             //add cliente
             props.setMostrarTabela.push(cliente);
             props.setMostrarTabela(true);
+          }
+          else {
+            //edita cliente
+            const indice = props.listaClientes.findIndex((cli) =>{ return cli.cpf === cliente.cpf});
+            props.listaClientes[indice] = cliente;
+            props.setModoEditor(false);
+            props.setClienteSelect({
+                cpf:'',
+                nomeCompleto:'',
+                endereco:'',
+                cidade:'',    
+                estado:'',
+                cep:'',
+            });
+            props.setMostrarTabela(true);
+          }
+            
         }
         else{
             setValidado(true);
@@ -123,7 +134,7 @@ export default function FormularioCadCliente(props) {
                     </Form.Control.Feedback>
                 </Form.Group>
             </Row>
-            <Button style={{ backgroundColor: "#4CAF50", borderColor: "#4CAF50", color: "#FFF", fontWeight: "bold" }} type="submit">Cadastrar</Button>
+            <Button style={{ backgroundColor: "#4CAF50", borderColor: "#4CAF50", color: "#FFF", fontWeight: "bold" }} type="submit">{props.modoEditor ? "Editar" : "Cadastrar"}</Button>
             <Button className="ms-2" variant="secondary" type = "button" onClick={ ()=>{props.setMostrarTabela(true);}}>Voltar</Button> 
         </Form>
     );

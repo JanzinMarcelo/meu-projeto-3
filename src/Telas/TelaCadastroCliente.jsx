@@ -7,6 +7,15 @@ import { listaClientes } from "../dadosMocados/listaClientes";
 export default function TelaCadastroCliente(props){
     const [mostrarTabela, setMostrarTabela] = useState(true);
     const [clientes, setClientes] = useState(listaClientes);
+    const [modoEditor, setModoEditor] = useState(false);
+    const [clienteSelect, setClienteSelect] = useState({
+        cpf:'',
+        nomeCompleto:'',
+        endereco:'',
+        cidade:'',    
+        estado:'',
+        cep:'',
+    });
     return (
         <Pagina>
             <Container mt-3>
@@ -15,10 +24,16 @@ export default function TelaCadastroCliente(props){
                    mostrarTabela ? <TabelaClientes 
                                     setMostrarTabela={setMostrarTabela}
                                     listaClientes={clientes}
-                                    setListaClientes={setClientes}/>
+                                    setListaClientes={setClientes}
+                                    setClienteSelect={setClienteSelect}
+                                    setModoEditor={setModoEditor}/>
                    : <FormularioCadCliente 
                     setMostrarTabela={setMostrarTabela}
-                    listaClientes={clientes}/> //Ternário //propriedades
+                    listaClientes={clientes}
+                    modoEditor={modoEditor}
+                    setModoEditor={setModoEditor}
+                    clienteSelect={clienteSelect}
+                    setClienteSelect={setClienteSelect}/> //Ternário //propriedades
                    }
                
             </Container>
