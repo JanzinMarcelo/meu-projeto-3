@@ -18,7 +18,7 @@ export default function FormularioCadCliente(props) {
         const nome = evento.target.name;
         const valor = evento.target.value;
         setCliente({...cliente, [nome]: valor});
-        
+
     }
     function cadastrar(evento){
         const formulario = evento.currentTarget; 

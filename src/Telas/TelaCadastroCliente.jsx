@@ -6,6 +6,7 @@ import { useState } from "react";
 import { listaClientes } from "../dadosMocados/listaClientes";
 export default function TelaCadastroCliente(props){
     const [mostrarTabela, setMostrarTabela] = useState(true);
+    const [clientes, setClientes] = useState(listaClientes);
     return (
         <Pagina>
             <Container mt-3>
@@ -13,10 +14,11 @@ export default function TelaCadastroCliente(props){
                 {
                    mostrarTabela ? <TabelaClientes 
                                     setMostrarTabela={setMostrarTabela}
-                                    listaClientes={listaClientes}/>
+                                    listaClientes={clientes}
+                                    setListaClientes={setClientes}/>
                    : <FormularioCadCliente 
                     setMostrarTabela={setMostrarTabela}
-                    listaClientes={listaClientes}/> //Ternário //propriedades
+                    listaClientes={clientes}/> //Ternário //propriedades
                    }
                
             </Container>
